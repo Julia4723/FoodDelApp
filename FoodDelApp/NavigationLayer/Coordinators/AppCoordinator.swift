@@ -10,7 +10,8 @@ import UIKit
 class AppCoordinator: Coordinator {
     
     override func start() {
-        showMainFlow()
+        //showMainFlow()
+        showOnboardingFlow()
     }
     
     
@@ -53,7 +54,7 @@ private extension AppCoordinator {
         
         let profileNavigationController = UINavigationController()
         let profileCoordinator = ProfileCoordinator(type: .profile, navigationController: profileNavigationController)
-        listNavigationController.tabBarItem = UITabBarItem(title: "Person", image: UIImage(systemName: "person"), tag: 3)
+        profileNavigationController.tabBarItem = UITabBarItem(title: "Person", image: UIImage(systemName: "person"), tag: 3)
         profileCoordinator.finishDelegate = self
         profileCoordinator.start()
         
