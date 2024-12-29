@@ -11,13 +11,14 @@ class OnboardingViewController: UIViewController {
     
     //MARK: - Property
     private var pages = [OnboardingScreen]()
+    private var currentPageIndex = 0
     
     
     //MARK: - Vies
     private let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
     private let pageControl = UIPageControl()
     private let button = UIButton()
-    weak var viewOutput: OnboardingViewOutput!
+    var viewOutput: OnboardingViewOutput!
     
     init(pages: [OnboardingScreen] = [OnboardingScreen](), viewOutput: OnboardingViewOutput!) {
         super.init(nibName: nil, bundle: nil)
@@ -56,6 +57,7 @@ private extension OnboardingViewController {
             button.setTitle(pages[3].buttonText, for: .normal)
         case 3:
             print("Exit")
+            viewOutput.onboardingFinish()
         default:
             break
         }
@@ -135,13 +137,25 @@ extension OnboardingViewController: UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
         if let index = pages.firstIndex(of: pendingViewControllers.first! as! OnboardingScreen) {
-            pageControl.currentPage = index
-            let page = pages[index]
-            let title = page.buttonText
-            button.setTitle(title, for: .normal)
+            if let index = pages.firstIndex(of: pendingViewControllers.first! as!
+                                            OnboardingScreen) {
+                currentPageIndex = index
+            }
+//            pageControl.currentPage = index
+//            let page = pages[index]
+//            let title = page.buttonText
+//            button.setTitle(title, for: .normal)
             
         }
     }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        if completed {
+            pageControl.currentPage = currentPageIndex
+            let page = pages[currentPageIndex]
+            let title = page.buttonText
+            button.setTitle(title, for: .normal)
+        }
+    }
 }
-
 

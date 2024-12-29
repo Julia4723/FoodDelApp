@@ -13,6 +13,9 @@ protocol OnboardingViewOutput: AnyObject {
 
 class OnboardingViewPresenter: OnboardingViewOutput {
     
+    private let userStorage = UserStorage.shared
+    
+    
     //MARK: - Property
     weak var coordinator: OnboardingCoordinator!
     
@@ -22,6 +25,7 @@ class OnboardingViewPresenter: OnboardingViewOutput {
     
     
     func onboardingFinish() {
+        userStorage.passedOnboarding = true
         coordinator.finish()
     }
     
