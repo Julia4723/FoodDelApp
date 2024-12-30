@@ -17,7 +17,7 @@ class OnboardingViewController: UIViewController {
     //MARK: - Vies
     private let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
     private let pageControl = UIPageControl()
-    private let button = UIButton()
+    private let button = AuthButton()
     var viewOutput: OnboardingViewOutput!
     
     init(pages: [OnboardingScreen] = [OnboardingScreen](), viewOutput: OnboardingViewOutput!) {
@@ -46,15 +46,15 @@ private extension OnboardingViewController {
         case 0:
             pageControl.currentPage = 1
             pageViewController.setViewControllers([pages[1]], direction: .forward, animated: true, completion: nil)
-            button.setTitle(pages[1].buttonText, for: .normal)
+            button.setTitle(pages[1].buttonText)
         case 1:
             pageControl.currentPage = 2
             pageViewController.setViewControllers([pages[2]], direction: .forward, animated: true, completion: nil)
-            button.setTitle(pages[2].buttonText, for: .normal)
+            button.setTitle(pages[2].buttonText)
         case 2:
             pageControl.currentPage = 3
             pageViewController.setViewControllers([pages[3]], direction: .forward, animated: true, completion: nil)
-            button.setTitle(pages[3].buttonText, for: .normal)
+            button.setTitle(pages[3].buttonText)
         case 3:
             print("Exit")
             viewOutput.onboardingFinish()
@@ -85,7 +85,7 @@ private extension OnboardingViewController {
         pageControl.isUserInteractionEnabled = false
         let page = pages[0]
         let title = page.buttonText
-        button.setTitle(title, for: .normal)
+        button.setTitle(title)
         
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageControl)
@@ -99,12 +99,8 @@ private extension OnboardingViewController {
     func setupButton() {
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .white
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 20
-        
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        button.action = buttonPressed
+        button.buttonAuth = .third
         
         NSLayoutConstraint.activate([
             button.bottomAnchor.constraint(equalTo: pageControl.bottomAnchor, constant: -50),
@@ -154,7 +150,7 @@ extension OnboardingViewController: UIPageViewControllerDelegate {
             pageControl.currentPage = currentPageIndex
             let page = pages[currentPageIndex]
             let title = page.buttonText
-            button.setTitle(title, for: .normal)
+            button.setTitle(title)
         }
     }
 }
