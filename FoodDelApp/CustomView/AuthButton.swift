@@ -41,7 +41,7 @@ class AuthButton: UIView {
         self.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = 24
         
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         
