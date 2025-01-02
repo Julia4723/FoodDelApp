@@ -101,6 +101,7 @@ private extension LoginViewController {
             setupTitleLabel()
             setupSignInButton()
             setupForgotLabel()
+            setupNavigationBar()
         case .signIn:
             setupBottomView()
             setupStack()
@@ -109,8 +110,23 @@ private extension LoginViewController {
             setupTitleLabel()
             setupSignInButton()
             setupForgotLabel()
+            setupNavigationBar()
         }
         
+    }
+    
+    func setupNavigationBar() {
+        let backImage = UIImage(resource: .back)
+        let backButton = UIBarButtonItem(
+            image: backImage,
+            style: .plain,
+            target: navigationController,
+            action: #selector(navigationController?.popViewController(animated:))
+        )
+        
+        navigationItem.leftBarButtonItem = backButton
+        navigationItem.leftBarButtonItem?.tintColor = .black
+    
     }
     
     func setupStack() {
@@ -179,7 +195,6 @@ private extension LoginViewController {
             signInPassword.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 30),
             signInPassword.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -30),
             signInPassword.heightAnchor.constraint(equalToConstant: 52),
-            
         ])
     }
     
@@ -201,14 +216,11 @@ private extension LoginViewController {
         bottomView.button2Action = facebookPress
         bottomView.button1Action = googlePress
         
-        
         NSLayoutConstraint.activate([
             bottomView.heightAnchor.constraint(equalToConstant: 150),
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            
         ])
     }
     
