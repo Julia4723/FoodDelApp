@@ -67,12 +67,14 @@ class BottomView: UIView {
         self.addSubview(view2)
         view2.image = .bottomImg
         view2.translatesAutoresizingMaskIntoConstraints = false
+        view2.contentMode = .scaleAspectFit
+        view2.clipsToBounds = true
         
         NSLayoutConstraint.activate([
             view2.topAnchor.constraint(equalTo: view1.bottomAnchor, constant: 18),
-            view2.leftAnchor.constraint(equalTo: self.leftAnchor, constant: -282/3),
-            view2.heightAnchor.constraint(equalToConstant: 150),
-            view2.widthAnchor.constraint(equalToConstant: 282)
+            view2.leftAnchor.constraint(equalTo: self.leftAnchor),
+            view2.heightAnchor.constraint(equalToConstant: 160),
+            view2.widthAnchor.constraint(equalToConstant: 250)
         ])
     }
     
