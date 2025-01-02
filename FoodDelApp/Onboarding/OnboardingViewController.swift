@@ -99,7 +99,9 @@ private extension OnboardingViewController {
     func setupButton() {
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.action = buttonPressed
+        button.action =  { [weak self] in
+            self?.buttonPressed()
+        }
         button.buttonAuth = .third
         
         NSLayoutConstraint.activate([
