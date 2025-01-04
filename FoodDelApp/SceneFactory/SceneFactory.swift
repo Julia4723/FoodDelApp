@@ -11,10 +11,16 @@ struct SceneFactory {
     
     //MARK: - Onboarding
     
-    static func makeOnboardingFlow(coordinator: AppCoordinator, finishDelegate: CoordinatorFinishDelegate, navigationController: UINavigationController) {
+    static func makeOnboardingFlow(coordinator: AppCoordinator, finishDelegate: CoordinatorFinishDelegate, navigationController: UINavigationController) -> OnboardingCoordinator {
         let onboardingCoordinator = OnboardingCoordinator(type: .onboarding, navigationController: navigationController, finishDelegate: finishDelegate)
         coordinator.addChildCoordinator(onboardingCoordinator)
-        onboardingCoordinator.start()
+        return onboardingCoordinator
+    }
+    
+    static func makeLoginFlow(coordinator: AppCoordinator, finishDelegate: CoordinatorFinishDelegate, navigationController: UINavigationController) -> LoginCoordinator {
+        let loginCoordinator = LoginCoordinator(type: .login, navigationController: navigationController, finishDelegate: finishDelegate)
+        coordinator.addChildCoordinator(loginCoordinator)
+        return loginCoordinator
     }
     
     
@@ -59,25 +65,25 @@ struct SceneFactory {
     static func makeMainFlow(coordinator: AppCoordinator, finishDelegate: CoordinatorFinishDelegate) -> TabBarController {
         let homeNavigationController = UINavigationController()
         let homeCoordinator = HomeCoordinator(type: .home, navigationController: homeNavigationController)
-        homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+        homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(resource: .store), tag: 0)
         homeCoordinator.finishDelegate = finishDelegate
         homeCoordinator.start()
         
         let orderNavigationController = UINavigationController()
         let orderCoordinator = OrderCoordinator(type: .order, navigationController: orderNavigationController)
-        orderNavigationController.tabBarItem = UITabBarItem(title: "Order", image: UIImage(systemName: "list.clipboard"), tag: 1)
+        orderNavigationController.tabBarItem = UITabBarItem(title: "Order", image: UIImage(resource: .shopping), tag: 1)
         orderCoordinator.finishDelegate = finishDelegate
         orderCoordinator.start()
         
         let listNavigationController = UINavigationController()
         let listCoordinator = ListCoordinator(type: .list, navigationController: listNavigationController)
-        listNavigationController.tabBarItem = UITabBarItem(title: "List", image: UIImage(systemName: "bookmark"), tag: 2)
+        listNavigationController.tabBarItem = UITabBarItem(title: "List", image: UIImage(resource: .list), tag: 2)
         listCoordinator.finishDelegate = finishDelegate
         listCoordinator.start()
         
         let profileNavigationController = UINavigationController()
         let profileCoordinator = ProfileCoordinator(type: .profile, navigationController: profileNavigationController)
-        profileNavigationController.tabBarItem = UITabBarItem(title: "Person", image: UIImage(systemName: "person"), tag: 3)
+        profileNavigationController.tabBarItem = UITabBarItem(title: "Person", image: UIImage(resource: .user), tag: 3)
         profileCoordinator.finishDelegate = finishDelegate
         profileCoordinator.start()
         
@@ -93,21 +99,31 @@ struct SceneFactory {
         
     }
     
-    static func makeAuthScene(coordinator: AppCoordinator) -> LoginViewController {
+    static func makeAuthScene(coordinator: LoginCoordinator) -> LoginViewController {
         let presenter = LoginPresenter(coordinator: coordinator)
         let controller = LoginViewController(viewOutput: presenter, state: .initial)
+        presenter.viewInput = controller
         return controller
     }
     
-    static func makeSignInScene(coordinator: AppCoordinator) -> LoginViewController {
+    static func makeSignInScene(coordinator: LoginCoordinator) -> LoginViewController {
         let presenter = LoginPresenter(coordinator: coordinator)
         let controller = LoginViewController(viewOutput: presenter, state: .signIn)
+        presenter.viewInput = controller
         return controller
     }
     
-    static func makeSignUpScene(coordinator: AppCoordinator) -> LoginViewController {
+    static func makeSignUpScene(coordinator: LoginCoordinator) -> LoginViewController {
         let presenter = LoginPresenter(coordinator: coordinator)
         let controller = LoginViewController(viewOutput: presenter, state: .signUp)
+        presenter.viewInput = controller
+        return controller
+    }
+    
+    static func makeHomeScene(coordinator: HomeCoordinator) -> HomeViewController {
+        //TODO: Add presenter
+        let controller = HomeViewController()
+       
         return controller
     }
 }

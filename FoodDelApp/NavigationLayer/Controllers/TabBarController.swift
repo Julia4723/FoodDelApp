@@ -26,6 +26,12 @@ class TabBarController: UITabBarController {
         
         tabBar.backgroundColor = .white
         tabBar.tintColor = AppColors.accentColor
+        tabBar.itemPositioning = .centered
+        tabBar.itemWidth = 40.0
+        tabBar.itemSpacing = 40
+        
+        UITabBarItem.appearance().titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 1)
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12, weight: .regular)], for: .normal)
         
     }
 }

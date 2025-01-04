@@ -14,11 +14,8 @@ enum LoginViewState {
 }
 
 protocol LoginViewInput: AnyObject {
-    func onSignInTapped()
-    func onSignUpTapped()
-    func onFaceBookTapped()
-    func onForgotTapped()
-    func onBackPressed()
+    func startLoader()
+    func stopLoader()
 }
 
 class LoginViewController: UIViewController {
@@ -28,7 +25,7 @@ class LoginViewController: UIViewController {
     private var isKeyboardShow = false
     private var bottomCTValue = 0.0
     
-    //MARK: - Property
+    //MARK: - Views
     private lazy var bottomView = BottomView()
     private lazy var signInUserName = CustomTextField()
     private lazy var signUpUserName = CustomTextField()
@@ -41,6 +38,8 @@ class LoginViewController: UIViewController {
     private lazy var titleLabel = UILabel()
     private lazy var forgotLabel = UILabel()
     
+    private lazy var loader = UIActivityIndicatorView(style: .large)
+    private lazy var loaderContainer = UIView()
     private lazy var verticalStack = UIStackView()
     
     
@@ -112,7 +111,7 @@ private extension LoginViewController {
             setupForgotLabel()
             setupNavigationBar()
         }
-        
+        setupLoaderView()
     }
     
     func setupNavigationBar() {
@@ -213,8 +212,12 @@ private extension LoginViewController {
         view.addSubview(bottomView)
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         
-        bottomView.button2Action = facebookPress
-        bottomView.button1Action = googlePress
+        bottomView.button2Action = { [weak self] in
+            self?.facebookPress()
+        }
+        bottomView.button1Action = { [weak self] in
+            self?.googlePress()
+        }
         
         NSLayoutConstraint.activate([
             bottomView.heightAnchor.constraint(equalToConstant: 150),
@@ -242,7 +245,9 @@ private extension LoginViewController {
         view.addSubview(signInButton)
         signInButton.translatesAutoresizingMaskIntoConstraints = false
         signInButton.buttonAuth = .primary
-        signInButton.action = onSignInTapped
+        signInButton.action = { [weak self] in
+            self?.onSignInTapped()
+        }
         
         switch state {
         case .initial:
@@ -292,7 +297,9 @@ private extension LoginViewController {
         signUpButton.translatesAutoresizingMaskIntoConstraints = false
         signUpButton.setTitle("Sign Up")
         signUpButton.buttonAuth = .secondary
-        signUpButton.action = onSignUpTapped
+        signUpButton.action = { [weak self] in
+            self?.onSignUpTapped()
+        }
         
         NSLayoutConstraint.activate([
             signUpButton.topAnchor.constraint(equalTo: signInButton.bottomAnchor, constant: 20),
@@ -340,11 +347,46 @@ private extension LoginViewController {
         ])
     }
     
+    func setupLoaderView() {
+        view.addSubview(loaderContainer)
+        loaderContainer.translatesAutoresizingMaskIntoConstraints = false
+        loaderContainer.backgroundColor = AppColors.blackText.withAlphaComponent(0.3)
+        loaderContainer.isHidden = true
+        
+        NSLayoutConstraint.activate([
+            loaderContainer.widthAnchor.constraint(equalTo: view.widthAnchor),
+            loaderContainer.heightAnchor.constraint(equalTo: view.heightAnchor),
+        ])
+        
+        loaderContainer.addSubview(loader)
+        loader.translatesAutoresizingMaskIntoConstraints = false
+        loader.color = .white
+        
+        NSLayoutConstraint.activate([
+            loader.centerYAnchor.constraint(equalTo: loaderContainer.centerYAnchor),
+            loader.centerXAnchor.constraint(equalTo: loaderContainer.centerXAnchor),
+        ])
+    }
     
 }
 
 //MARK: - LoginViewInputDelegate
 extension LoginViewController: LoginViewInput {
+    func startLoader() {
+        loaderContainer.isHidden = false
+        loader.startAnimating()
+    }
+    
+    func stopLoader() {
+        loaderContainer.isHidden = true
+        loader.stopAnimating()
+    }
+    
+    
+}
+
+//MARK: - Private Methods
+private extension LoginViewController {
     func onBackPressed() {
         //
     }
@@ -354,7 +396,8 @@ extension LoginViewController: LoginViewInput {
         case .initial:
             viewOutput.goToSignIn()
         case .signIn:
-            return
+            print(#function)
+            viewOutput.loginStart(login: signInUserName.text ?? "", password: signInPassword.text ?? "")
         case .signUp:
             return
         }
@@ -378,8 +421,6 @@ extension LoginViewController: LoginViewInput {
     func onForgotTapped() {
         //
     }
-    
-    
 }
 
 

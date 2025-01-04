@@ -134,7 +134,7 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
 extension OnboardingViewController: UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        if let index = pages.firstIndex(of: pendingViewControllers.first! as! OnboardingScreen) {
+        if pages.firstIndex(of: pendingViewControllers.first! as! OnboardingScreen) != nil {
             if let index = pages.firstIndex(of: pendingViewControllers.first! as!
                                             OnboardingScreen) {
                 currentPageIndex = index
