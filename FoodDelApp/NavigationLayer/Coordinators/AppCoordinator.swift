@@ -12,14 +12,16 @@ class AppCoordinator: Coordinator {
     private let userStorage = UserStorage.shared
     private let factory = SceneFactory.self
     
+    var tabBarController: UITabBarController?
+    
     override func start() {
-        //showOnboardingFlow()
+        showMainFlow()
         
-        if userStorage.passedOnboarding {
-            showAuthFlow()
-        } else {
-            showOnboardingFlow()
-        }
+//        if userStorage.passedOnboarding {
+//            showAuthFlow()
+//        } else {
+//            showOnboardingFlow()
+//        }
         
 //        let loginPresenter = LoginPresenter(coordinator: self)
 //        let loginVC = LoginViewController(viewOutput: loginPresenter, state: .signIn)
@@ -38,57 +40,45 @@ class AppCoordinator: Coordinator {
 private extension AppCoordinator {
     func showOnboardingFlow() {
         guard let navigationController = navigationController else { return}
-        factory.makeOnboardingFlow(coordinator: self, finishDelegate: self, navigationController: navigationController)
+       let onboardingCoordinator = factory.makeOnboardingFlow(coordinator: self, finishDelegate: self, navigationController: navigationController)
+        onboardingCoordinator.start()
     }
     
     func showMainFlow() {
         guard let navigationController = navigationController else { return}
-        
         let tabBarController = factory.makeMainFlow(coordinator: self, finishDelegate: self)
-        
-        navigationController.pushViewController(tabBarController, animated: true)
+        self.tabBarController = tabBarController
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.type = .fade
+        self.window?.layer.add(transition, forKey: kCATransition)
+        //navigationController.pushViewController(tabBarController, animated: true)
+        self.window?.rootViewController = self.tabBarController
     }
     
     func showAuthFlow() {
         guard let navigationController = navigationController else { return}
-        let viewController = factory.makeAuthScene(coordinator: self)
-        navigationController.pushViewController(viewController, animated: true)
-    }
-    
-   
-}
-
-//MARK: - Methods scene
-extension AppCoordinator {
-    func showSignInScene() {
-        guard let navigationController = navigationController else { return}
-        let viewController = factory.makeSignInScene(coordinator: self)
-        navigationController.pushViewController(viewController, animated: true)
-    }
-    
-    func showSignUpScene() {
-        guard let navigationController = navigationController else { return}
-        let viewController = factory.makeSignUpScene(coordinator: self)
-        navigationController.pushViewController(viewController, animated: true)
+        let loginCoordinator = factory.makeLoginFlow(coordinator: self, finishDelegate: self, navigationController: navigationController)
+        loginCoordinator.start()
     }
 }
 
-
+//MARK: - Finish Delegate
 extension AppCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: any CoordinatorProtocol) {
         removeChildCoordinator(childCoordinator)
         
         switch childCoordinator.type {
         case .onboarding:
-            navigationController?.viewControllers.removeAll()
             showAuthFlow()
+            navigationController?.viewControllers = [navigationController?.viewControllers.last ?? UIViewController()]
+        case .login:
+            showMainFlow()
+            navigationController?.viewControllers = [navigationController?.viewControllers.last ?? UIViewController()]
         case .app:
             return
-            
         default:
             navigationController?.popToRootViewController(animated: false)
         }
     }
-    
-    
 }

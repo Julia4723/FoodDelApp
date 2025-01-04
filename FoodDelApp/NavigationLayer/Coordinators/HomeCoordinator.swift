@@ -8,13 +8,26 @@
 import UIKit
 
 class HomeCoordinator: Coordinator {
+    
+    //MARK: - Property
+    private let factory = SceneFactory.self
+    
     override func start() {
-        let vc = ViewController()
-        vc.view.backgroundColor = .red
-        navigationController?.pushViewController(vc, animated: true)
+        showHomeScene()
     }
     
     override func finish() {
         print("AppCoordinator finish")
     }
+}
+
+//MARK: - Navigation
+extension HomeCoordinator {
+    
+    func showHomeScene() {
+        guard let navigationController = navigationController else { return}
+        let viewController = factory.makeHomeScene(coordinator: self)
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
 }
