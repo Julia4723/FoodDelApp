@@ -1,14 +1,13 @@
 //
-//  CustomTextField.swift
+//  SearchField.swift
 //  FoodDelApp
 //
-//  Created by user on 31.12.2024.
+//  Created by user on 05.01.2025.
 //
 
 import UIKit
 
-class CustomTextField: UITextField {
-    
+class SearchField: UITextField {
     
     init() {
         super.init(frame: .zero)
@@ -22,13 +21,18 @@ class CustomTextField: UITextField {
     func setupLayout() {
         self.layer.cornerRadius = 24
         self.backgroundColor = AppColors.grayBackground
-        self.placeholder = "Text input"
+        self.placeholder = "Search"
         self.font = UIFont.systemFont(ofSize: 14)
         
+        let imageView = UIImageView(frame: CGRect(x: 20, y: 4, width: 20, height: 20))
+        imageView.image = UIImage(resource: .loupe)
+        
+        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 24))
+        leftPaddingView.addSubview(imageView)
         
         //Отступ для текста внутри инпута
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: self.frame.height))
-        self.leftView = paddingView
+        self.leftView = leftPaddingView
         self.rightView = paddingView
         self.leftViewMode = .always
         self.rightViewMode = .always
