@@ -9,6 +9,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    var presenter: HomePresenterProtocol
+    
     //MARK: - Property
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -53,7 +55,17 @@ class HomeViewController: UIViewController {
         return collection
     }()
     
+    //MARK: - Init
+    init(presenter: HomePresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
@@ -159,8 +171,8 @@ extension HomeViewController {
     
     func setupSmallHCollection() {
         contentView.addSubview(smallHCollection)
-        smallHCollection.backgroundColor = .red
-        
+        smallHCollection.backgroundColor = .clear
+        smallHCollection.showsHorizontalScrollIndicator = false
         smallHCollection.translatesAutoresizingMaskIntoConstraints = false
         smallHCollection.delegate = self
         smallHCollection.dataSource = self
@@ -252,7 +264,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView.tag {
         case 1:
-            return 30
+            return presenter.categoryData.count
         case 2:
             return 15
         case 3:
@@ -267,8 +279,11 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         switch collectionView.tag {
         case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SmallHCollectionCell", for: indexPath)
-            return cell
+            let category = presenter.categoryData[indexPath.row]
+            print("Creating cell for category: \(category.rawValue)")
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SmallHCollectionCell", for: indexPath) as? SmallHCollectionCell
+            cell?.configure(with: category)
+            return cell ?? UICollectionViewCell()
             
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BigHCollectionCell", for: indexPath)
@@ -281,6 +296,21 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return UICollectionViewCell()
         }
         
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch collectionView.tag {
+        case 1:
+            let cell = collectionView.cellForItem(at: indexPath) as? SmallHCollectionCell
+            cell?.toggleSelected()
+            
+        case 2:
+            print(#function)
+        case 3:
+            print(#function)
+        default:
+            print(#function)
+        }
     }
     
 }

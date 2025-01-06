@@ -11,9 +11,8 @@ class SmallHCollectionCell: UICollectionViewCell {
     
     let topView = UIView()
     let label = UILabel()
-    
-    
-    
+    let imageView = UIImageView()
+    var isCategorySelected = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,15 +24,44 @@ class SmallHCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with category: FoodCategory) {
+        label.text = category.rawValue
+        switch category {
+        case .drink:
+            imageView.image = UIImage(resource: .coffee).withTintColor(isCategorySelected ? .white : .black)
+        case .snack:
+            imageView.image = UIImage(resource: .potato).withTintColor(isCategorySelected ? .white : .black)
+        case .food:
+            imageView.image = UIImage(resource: .burger).withTintColor(isCategorySelected ? .white : .black)
+        case .cake:
+            imageView.image = UIImage(resource: .cake).withTintColor(isCategorySelected ? .white : .black)
+        case .salad:
+            imageView.image = UIImage(resource: .potato).withTintColor(isCategorySelected ? .white : .black)
+        case .none:
+            print(#function)
+        }
+    }
+    
+    func toggleSelected() {
+        if isCategorySelected {
+            imageView.image = imageView.image?.withTintColor(.black)
+            topView.backgroundColor = AppColors.grayBackground
+        } else {
+            imageView.image = imageView.image?.withTintColor(.white)
+            topView.backgroundColor = AppColors.accentColor
+        }
+        isCategorySelected.toggle()
+    }
+    
     func setupCell() {
-        contentView.backgroundColor = .blue
+        contentView.backgroundColor = .clear
         setupTopView()
         setupBottomLabel()
     }
     
     func setupTopView() {
         contentView.addSubview(topView)
-        topView.backgroundColor = .green
+        topView.backgroundColor = AppColors.grayBackground
         topView.layer.cornerRadius = 20
         topView.layer.masksToBounds = true
         
@@ -44,6 +72,18 @@ class SmallHCollectionCell: UICollectionViewCell {
             topView.heightAnchor.constraint(equalToConstant: 70),
             topView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             topView.topAnchor.constraint(equalTo: contentView.topAnchor),
+        ])
+        
+        topView.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: topView.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 30),
+            imageView.heightAnchor.constraint(equalToConstant: 30),
         ])
         
     }
