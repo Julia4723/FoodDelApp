@@ -122,7 +122,8 @@ struct SceneFactory {
     
     static func makeHomeScene(coordinator: HomeCoordinator) -> HomeViewController {
         //TODO: Add presenter
-        let controller = HomeViewController()
+        let presenter = HomeViewPresenter(coordinator: coordinator)
+        let controller = HomeViewController(presenter: presenter)
        
         return controller
     }
